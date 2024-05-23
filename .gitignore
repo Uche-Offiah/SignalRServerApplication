@@ -1,0 +1,12 @@
+# Add any directories, files, or patterns you don't want to be tracked by version control
+v15
+.vs
+bin
+obj
+Logs/
+HmisSaneServer.csproj.user
+.vscode
+Properties
+Obfuscator_Output
+appsettings.Development.json
+appsettings.json
