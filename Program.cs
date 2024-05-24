@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using SignalRChatApplication;
+using StackExchange.Redis;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -47,12 +48,12 @@ builder.Services.AddSignalR(options =>
     options.EnableDetailedErrors = true;
 });
 
-// Configure Redis for distributed caching and message persistence
-//builder.Services.AddSingleton<IConnectionMultiplexer>(provider =>
-//{
-//    var configuration = ConfigurationOptions.Parse(Configuration.GetConnectionString("RedisConnection"));
-//    return ConnectionMultiplexer.Connect(configuration);
-//});
+//Configure Redis for distributed caching and message persistence
+builder.Services.AddSingleton<IConnectionMultiplexer>(provider =>
+{
+    var configuration = ConfigurationOptions.Parse(builder.Configuration["RedisConnection"]);
+return ConnectionMultiplexer.Connect(configuration);
+});
 
 var app = builder.Build();
 
