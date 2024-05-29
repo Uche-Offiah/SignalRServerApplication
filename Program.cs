@@ -49,11 +49,12 @@ builder.Services.AddSignalR(options =>
 });
 
 //Configure Redis for distributed caching and message persistence
-//builder.Services.AddSingleton<IConnectionMultiplexer>(provider =>
-//{
-//    var configuration = ConfigurationOptions.Parse(builder.Configuration["RedisConnection"]);
-//return ConnectionMultiplexer.Connect(configuration);
-//});
+builder.Services.AddSingleton<IConnectionMultiplexer>(provider =>
+{
+    var configuration = ConfigurationOptions.Parse(builder.Configuration["RedisConnection"]);
+    return ConnectionMultiplexer.Connect(configuration);
+});
+builder.Services.AddHttpClient();
 
 var app = builder.Build();
 

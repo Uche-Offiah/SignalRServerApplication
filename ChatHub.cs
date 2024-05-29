@@ -7,17 +7,17 @@ namespace SignalRChatApplication
 {
     public class ChatHub : Hub
     {
-        //private readonly IConnectionMultiplexer _redisConnection;
+        private readonly IConnectionMultiplexer _redisConnection;
 
-        //public ChatHub(IConnectionMultiplexer redisConnection)
-        //{
-        //    _redisConnection = redisConnection;
-        //}
+        public ChatHub(IConnectionMultiplexer redisConnection)
+        {
+            _redisConnection = redisConnection;
+        }
         public async Task SendMessage(string user, string message)
         {
             // Save message to Redis for persistence
-            //IDatabase db = _redisConnection.GetDatabase();
-            //await db.ListLeftPushAsync("chatMessages", $"{user}: {message}");
+            IDatabase db = _redisConnection.GetDatabase();
+            await db.ListLeftPushAsync("chatMessages", $"{user}: {message}");
             var encryptedMessage = EncryptMessage(message);
 
             //await Clients.All.SendAsync("ReceiveMessage", user, message);
