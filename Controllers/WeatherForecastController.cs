@@ -41,18 +41,28 @@ namespace SignalRChatApplication.Controllers
         //    .ToArray();
         //}
 
-        private async Task<string> GetForecast(double latitude, double longitude)
+        private string GetForecast(double latitude, double longitude)
         {
-            var pointsRequestQuery = $"https://api.weather.gov/points/{latitude},{longitude}"; //get the URI
-            var result = await _client.GetFromJsonAsync<JsonObject>(pointsRequestQuery);
+            //var pointsRequestQuery = $"https://api.weather.gov/points/{latitude},{longitude}"; //get the URI
+            //var result = await _client.GetFromJsonAsync<JsonObject>(pointsRequestQuery);
+
+            //var gridX = result["properties"]["gridX"].ToString();
+            //var gridY = result["properties"]["gridY"].ToString();
+            //var gridId = result["Properties"]["gridId"].ToString();
+            //var forecastRequestQuery = $"https://api.weather.gov/gridpoints/{gridId}/{gridX},{gridY}/forecast";
+            //var forecastResult = await _client.GetFromJsonAsync<JsonObject>(forecastRequestQuery);
+            //var periodsJson = forecastResult["properties"]["periods"].ToJsonString();
+            var forecastResult = new List<WeatherForecast>();
             
-            var gridX = result["properties"]["gridX"].ToString();
-            var gridY = result["properties"]["gridY"].ToString();
-            var gridId = result["Properties"]["gridId"].ToString();
-            var forecastRequestQuery = $"https://api.weather.gov/gridpoints/{gridId}/{gridX},{gridY}/forecast";
-            var forecastResult = await _client.GetFromJsonAsync<JsonObject>(forecastRequestQuery);
-            var periodsJson = forecastResult["properties"]["periods"].ToJsonString();
-            return periodsJson;
+            var item = new WeatherForecast
+            {
+                Name = "Summer",
+                Number = 2,
+                WindSpeed = "25KM/H",
+                WindDirection = "East"
+            };
+            forecastResult.Add(item);
+            return JsonSerializer.Serialize(forecastResult);
         }
 
         [HttpGet(Name = "GetWeatherForecast")]
@@ -64,7 +74,7 @@ namespace SignalRChatApplication.Controllers
             json = await _redis.StringGetAsync(keyName);
             if (string.IsNullOrEmpty(json))
             {
-                json = await GetForecast(latitude, longitude);
+                json =  GetForecast(latitude, longitude);
                 var setTask = _redis.StringSetAsync(keyName, json);
                 var expireTask = _redis.KeyExpireAsync(keyName, TimeSpan.FromSeconds(3600));
                 await Task.WhenAll(setTask, expireTask);
