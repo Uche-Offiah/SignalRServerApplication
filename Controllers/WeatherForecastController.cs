@@ -83,6 +83,7 @@ namespace SignalRChatApplication.Controllers
             var forecast =  JsonSerializer.Deserialize<IEnumerable<WeatherForecast>>(json);
             watch.Stop();
             var result = new ForecastResult(forecast, watch.ElapsedMilliseconds);
+            Utility.LogStuff(json, "RedisFolder");
 
             return result;
         }
