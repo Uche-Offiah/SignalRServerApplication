@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using SignalRChatApplication;
 using StackExchange.Redis;
+using System.Collections.Concurrent;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -55,6 +56,8 @@ builder.Services.AddSingleton<IConnectionMultiplexer>(provider =>
     return ConnectionMultiplexer.Connect(configuration);
 });
 builder.Services.AddHttpClient();
+builder.Services.AddSingleton(new ConcurrentQueue<string>());
+builder.Services.AddHostedService<MessageProcessingService>();
 
 var app = builder.Build();
 
