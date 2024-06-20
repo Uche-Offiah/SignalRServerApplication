@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using Serilog;
 using SignalRChatApplication;
 using StackExchange.Redis;
 using System.Collections.Concurrent;
@@ -58,6 +59,15 @@ builder.Services.AddSingleton<IConnectionMultiplexer>(provider =>
 builder.Services.AddHttpClient();
 builder.Services.AddSingleton(new ConcurrentQueue<string>());
 builder.Services.AddHostedService<MessageProcessingService>();
+
+builder.Host.UseSerilog((context, configuration) =>
+    configuration.ReadFrom.Configuration(context.Configuration));
+
+
+
+Log.Logger = new LoggerConfiguration()
+               .ReadFrom.Configuration(builder.Configuration)
+               .CreateLogger();
 
 var app = builder.Build();
 
